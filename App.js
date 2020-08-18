@@ -9,6 +9,8 @@ import ContactPage from './Pages/ContactPage';
 import ManagerPage from './Pages/ManagerPage';
 import RestoreDetails from './Pages/RestoreDetails';
 import ShiftsAdvertisingPage from './Pages/ShiftsAdvertisingPage';
+import { Feather } from "@expo/vector-icons"
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -19,32 +21,48 @@ function MyDrawer() {
       <Drawer.Screen
         name="UserShifts"
         component={UserShifts}
-        options={{ drawerLabel: 'UserShifts' }}
+        options={{
+          drawerLabel: 'העלאת משמרת',
+          drawerIcon: ({ tintColor }) =>
+            <Feather name="upload" size={16} color={tintColor} />
+        }}
       />
       <Drawer.Screen
         name="ContactPage"
         component={ContactPage}
-        options={{ drawerLabel: 'ContactPage' }}
+        options={{
+          drawerLabel: 'יצירת קשר',
+          drawerIcon: ({ tintColor }) =>
+            <Feather name="trending-up" size={16} color={tintColor} />
+        }}
       />
       <Drawer.Screen
         name="ManagerPage"
         component={ManagerPage}
-        options={{ drawerLabel: 'ManagerPage' }}
+        options={{
+          drawerLabel: 'מנהל',
+          drawerIcon: ({ tintColor }) =>
+            <Feather name="activity" size={16} color={tintColor} />
+        }}
       />
-      <Drawer.Screen
-        name="RestoreDetails"
-        component={RestoreDetails}
-        options={{ drawerLabel: 'RestoreDetails' }}
-      />
+
       <Drawer.Screen
         name="ShiftsAdvertisingPage"
         component={ShiftsAdvertisingPage}
-        options={{ drawerLabel: 'ShiftsAdvertisingPage' }}
+        options={{
+          drawerLabel: 'פרסום משמרות',
+          drawerIcon: ({ tintColor }) =>
+            <Feather name="log-out" size={16} color={tintColor} />
+        }}
       />
       <Drawer.Screen
         name="Log-Out"
         component={LoginPage}
-        options={{ drawerLabel: 'Log-Out' }}
+        options={{
+          drawerLabel: 'התנתק',
+          drawerIcon: ({ tintColor }) =>
+            <Feather name="log-out" size={16} color={tintColor} />
+        }}
       />
       <Drawer.Screen
         name="LoginPage"
@@ -57,6 +75,11 @@ function MyDrawer() {
         component={RegisterPage}
         options={{ drawerLabel: () => null }}
       />
+      <Drawer.Screen
+        name="RestoreDetails"
+        component={RestoreDetails}
+        options={{ drawerLabel: () => null }}
+      />
     </Drawer.Navigator>
   );
 }
@@ -67,7 +90,7 @@ function App() {
     <NavigationContainer>
       <MyDrawer>
         <Stack.Navigator initialRouteName="LoginPage">
-          <Stack.Screen name="UserShifts" component={UserShifts} />
+          <Stack.Screen name="העלאת משמרת" component={UserShifts} />
           <Stack.Screen name="LoginPage" component={LoginPage} />
           <Stack.Screen name="RegisterPage" component={RegisterPage} />
           <Stack.Screen name="ContactPage" component={ContactPage} />

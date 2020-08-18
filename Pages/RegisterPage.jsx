@@ -1,7 +1,8 @@
 import React from 'react';
 import { ScrollView, Image, TextInput, View, Text, StyleSheet, TouchableHighlight, ImageBackground } from 'react-native'
-import Y from '../assets/dottanregisterimage.jpg';
-import X from '../assets/registericon.png';
+import img from '../assets/signupicon1313.png';
+import background from '../assets/backgroundImg.jpg';
+
 let url = 'http://185.60.170.14/plesk-site-preview/ruppinmobile.ac.il/site04/api/worker';
 export default class RegisterPage extends React.Component {
   constructor(props) {
@@ -106,9 +107,9 @@ export default class RegisterPage extends React.Component {
   }
   render() {
     return (
-      <ImageBackground source={Y} style={styles.container} >
+      <ImageBackground source={background} style={styles.container} >
         <View >       
-          <Image source={X} style={{ margin:20,marginTop:50,width: 190, height: 120 }} />
+          <Image source={img} style={{ margin:20,marginTop:50,width: 190, height: 120 }} />
            <Text style={styles.Topic}>REGISTER PAGE</Text>
         </View>
         <ScrollView

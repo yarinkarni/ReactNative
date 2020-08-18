@@ -1,16 +1,17 @@
-import React,{Header} from "react";
-import {  StyleSheet, Text, View, TextInput, TouchableHighlight, ScrollView, TouchableOpacity } from "react-native";
+import React from "react";
+import { StyleSheet, Text, View, TextInput, TouchableHighlight, ScrollView, TouchableOpacity, ImageBackground } from "react-native";
 import { Calendar } from 'react-native-plain-calendar';
-import moment, { weekdays } from 'moment';
 import { AntDesign } from '@expo/vector-icons';
 import { DrawerActions } from "@react-navigation/native";
+import background from "../assets/backgroundImg.jpg";
+import moment from 'moment';
 let url = 'http://185.60.170.14/plesk-site-preview/ruppinmobile.ac.il/site04/api/shifts';
 
 
-const Img = ({ propsStyle }) => {
+const Img = ({ propsStyle,isValid }) => {
   return (
     <View style={[{ justifyContent: "center", alignItems: "center", width: 30, height: 30 }, propsStyle && { backgroundColor: "red" }]}>
-      <AntDesign name="pluscircle" size={24} color="green" style={[{ backgroundColor: 'white' }]} />
+      <AntDesign name="pluscircle" size={28} color={isValid?'red':"yellow"} style={[{ backgroundColor: 'rgba(0,0,0,0)' }]} />
     </View>
   )
 }
@@ -49,12 +50,8 @@ export default class UserShifts extends React.Component {
       .then((resp) => resp.json())
       .then((data) => {
         if (data != null) {
-          console.log(data);
           this.setState({ data });
           return data;
-        }
-        else {
-          console.log("לא קיבל")
         }
       })
       .catch(function (err) {
@@ -80,10 +77,7 @@ export default class UserShifts extends React.Component {
       shift,
       name: user ? user.Name : null
     }
-    console.log(data);
-
     let s = await this.AddShift(data.day, data.remarks, data.shift, data.name);
-    console.log(s);
     if (s === null) {
       alert("כבר הגשת משמרת ביום הזה");
       this.btnreset();
@@ -115,7 +109,6 @@ export default class UserShifts extends React.Component {
       })
       .then((resp) => resp.json())
       .then(function (data) {
-        console.log(data);
         if (!data.toString().includes("could not insert")) {
           returnedObj = data;
         }
@@ -132,8 +125,6 @@ export default class UserShifts extends React.Component {
   checkValidMorning() {
     const { data, shift, day } = this.state;
     let a = []
-    console.log(day, shift);
-    console.log("data.length", data.length);
     if (data.length) {
       a = data.filter(a => a.Day == day && a.Shift1 == "בוקר")
     }
@@ -142,8 +133,6 @@ export default class UserShifts extends React.Component {
   checkValidNoon() {
     const { data, shift, day } = this.state;
     let a = []
-    console.log(day, shift);
-    console.log("data.length", data.length);
     if (data.length) {
       a = data.filter(a => a.Day == day && a.Shift1 == "צהריים")
     }
@@ -152,8 +141,6 @@ export default class UserShifts extends React.Component {
   checkValidEvening() {
     const { data, shift, day } = this.state;
     let a = []
-    console.log(day, shift);
-    console.log("data.length", data.length);
     if (data.length) {
       a = data.filter(a => a.Day == day && a.Shift1 == "ערב")
     }
@@ -161,62 +148,85 @@ export default class UserShifts extends React.Component {
   }
   render() {
     const { shift } = this.state
-    const {navigation}=this.props
-    return (
-      <ScrollView contentContainerStyle={styles.scrollContentContainer} >
-          <TouchableOpacity style={{position:'absolute',top:15,left:10}} onPress={() => {navigation.dispatch(DrawerActions.toggleDrawer())} }>
-          <AntDesign name="menu-fold" size={24} color="black" style={[{ backgroundColor: 'white' }]} />
+    const { navigation } = this.props
+   const checkValidMorning =this.checkValidMorning()
+    const checkValidNoon =this.checkValidNoon()
+    const checkValidEvening = this.checkValidEvening()
 
-                </TouchableOpacity>
-        <View style={{ borderWidth: 4, borderRadius: 5, borderColor: "black", width: 410, height: 328 }}>
-          <Calendar.Picker onSelected={(e) => this.setState({
-            day: moment(e.selected).day() + 1,
-            shift: null,
-            remarks: ''
-          })}
-            selectedType='single'
-            style={{ position: "relative", padding: 20 }} />
-        </View>
-        <View style={{ paddingVertical: 8 }}>
-          <TouchableOpacity style={styles.addButton} disabled={this.checkValidMorning()} onPress={() => this.onShiftSelected('בוקר')}>
-            <Text style={{ padding: 30, fontWeight: "bold" }}>בוקר</Text>
-            <Img propsStyle={shift == 'בוקר'} />
+    return (
+      <ImageBackground source={background} style={styles.containerView}>
+        <ScrollView contentContainerStyle={styles.scrollContentContainer} >
+          <TouchableOpacity style={{ position: 'absolute', top: 40, left: 10 }} onPress={() => { navigation.dispatch(DrawerActions.toggleDrawer()) }}>
+            <AntDesign  name="menu-fold" size={24} color="black" style={[{ backgroundColor: 'white' }]} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addButton} disabled={this.checkValidNoon()} onPress={() => this.onShiftSelected("צהריים")}>
-            <Text style={{ padding: 30, fontWeight: "bold" }}>צהריים</Text>
-            <Img propsStyle={shift == 'צהריים'} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.addButton} disabled={this.checkValidEvening()} onPress={() => this.onShiftSelected("ערב")}>
-            <Text style={{ padding: 30, fontWeight: "bold" }}>ערב</Text>
-            <Img propsStyle={shift == 'ערב'} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputContainer}>
-          <Text style={{ marginRight: 20 }}>הערות :</Text>
-          <TextInput style={styles.inputs}
-            value={this.state.remarks} onChangeText={(text) => { this.txtchgRemarks(text) }} placeholder="Write your comment here"></TextInput>
-        </View>
-        <View style={{ padding: 50, justifyContent: "space-between", alignItems: "center", flexDirection: "row", width: 410, height: 50 }}>
-          <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.onSend()}>
-            <Text style={styles.loginText}>שמור</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.btnreset()}>
-            <Text style={styles.loginText}>אפס בחירה</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={{ alignItems: "center" }}>
-          <Text style={styles.textStyle}>עובדים יקרים לתשומת ליבכם !</Text>
-          <Text style={styles.textStyle}>בכל יום רביעי מ8 בבוקר ועד מוצ''ש תיפתח לכם האופציה לבחירת משמרות</Text>
-          <Text style={styles.textStyle}> עובד אשר לא יישבץ את עצמו ישובץ בהתאם ע''פ דרישת המערכת.</Text>
-        </View>
-      </ScrollView >
-      
+          <View style={{ borderWidth: 4, borderRadius: 5, borderColor: "#FFFFFF", width: 410, height: 350 }}>
+            <Text style={{ color: "#FFFFFF", fontSize: 13, fontWeight: "bold", paddingRight: 100 }}>בחר את התאריך שברצנוך לתפוס משמרת :</Text>
+            <Calendar.Picker minDate={new Date()}
+            dayTextStyle={{"color": "#FFFFFF", fontWeight: "bold"}}
+            headerTitleStyle={{"color": "#FFFFFF", fontWeight: "bold"}}
+              weekdayStyle={{ "color": "#FFFFFF", fontWeight: "bold" }}
+              onSelected={(e) => this.setState({ day: moment(e.selected).day() + 1, shift: null, remarks: '' })}
+              selectedType='single'
+              style={{ position: "relative", padding: 20 }} />
+          </View>
+          <View style={{ paddingVertical: 8 }}>
+            <View style={{ borderWidth: 5, borderRadius: 20, margin: 0, justifyContent: 'center', width: 400, height: 100, paddingTop: 30, flexDirection: "row-reverse", backgroundColor: "#8A2BE2" }}>
+              <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 20 }}>בחר את המשמרת שלך : </Text>
+            </View>
+            <View style={{ alignItems: 'center', borderWidth: 5, borderRadius: 20, margin: 0, justifyContent: 'center', width: 400, height: 100, flexDirection: "row-reverse", backgroundColor: "#8A2BE2" }}>
+              <TouchableOpacity style={styles.addButton} disabled={checkValidMorning} onPress={() => this.onShiftSelected('בוקר')}>
+                <Text style={{ fontWeight: "bold", color: "#FFFFFF", fontSize: 20 }}>בוקר</Text>
+                <Img propsStyle={shift == 'בוקר'}isValid={checkValidMorning}  />
+              </TouchableOpacity>
+            </View>
+            <View style={{ borderWidth: 5, borderRadius: 20, margin: 0, justifyContent: 'center', width: 400, height: 100, flexDirection: "row-reverse", backgroundColor: "#8A2BE2" }}>
+              <TouchableOpacity style={styles.addButton} disabled={this.checkValidNoon()} onPress={() => this.onShiftSelected("צהריים")}>
+                <Text style={{ fontWeight: "bold", color: "#FFFFFF", fontSize: 20 }}>צהריים</Text>
+                <Img propsStyle={shift == 'צהריים'}isValid={checkValidNoon}  />
+              </TouchableOpacity>
+            </View>
+            <View style={{ borderWidth: 5, borderRadius: 20, margin: 0, justifyContent: 'center', width: 400, height: 100, flexDirection: "row-reverse", backgroundColor: "#8A2BE2" }}>
+              <TouchableOpacity style={styles.addButton} disabled={this.checkValidEvening()} onPress={() => this.onShiftSelected("ערב")}>
+                <Text style={{  fontWeight: "bold", color: "#FFFFFF", fontSize: 20 }}>ערב</Text>
+                <Img propsStyle={shift == 'ערב'}isValid={checkValidEvening} />
+              </TouchableOpacity>
+            </View>
+
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={{ marginRight: 20 }}>הערות :</Text>
+            <TextInput style={styles.inputs}
+              value={this.state.remarks} onChangeText={(text) => { this.txtchgRemarks(text) }} placeholder="כתוב את ההערה שלך כאן"></TextInput>
+          </View>
+          <View style={{ padding: 50, justifyContent: "space-between", alignItems: "center", flexDirection: "row", width: 410, height: 50 }}>
+            <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.onSend()}>
+              <Text style={styles.loginText}>שמור</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.btnreset()}>
+              <Text style={styles.loginText}>אפס בחירה</Text>
+            </TouchableHighlight>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Text style={styles.textStyle}>עובדים יקרים לתשומת ליבכם !</Text>
+            <Text style={styles.textStyle}>בכל יום רביעי מ8 בבוקר ועד מוצ''ש תיפתח לכם האופציה לבחירת משמרות</Text>
+            <Text style={styles.textStyle}> עובד אשר לא יישבץ את עצמו ישובץ בהתאם ע''פ דרישת המערכת.</Text>
+          </View>
+        </ScrollView >
+      </ImageBackground>
     );
   };
 }
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#DCDCDC',
+  },
+  containerView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#DCDCDC',
+    height: "105%",
+    width: "100%",
   },
   inputContainer: {
     borderBottomColor: '#F5FCFF',
@@ -253,18 +263,21 @@ const styles = StyleSheet.create({
   scrollContentContainer: {
     alignItems: "center",
     paddingBottom: 60,
-    paddingTop: 50,
+    paddingTop: 100,
     // marginTop:40
   },
   textStyle: {
     fontWeight: "bold",
-    fontSize: 12
+    fontSize: 12,
+    color:"#FFFFFF"
   },
   addButton: {
-    justifyContent: "center",
+    justifyContent: "space-around",
     alignItems: "center",
     flexDirection: "row-reverse",
-    width: 200,
-    height: 100
+    // width: 200,
+    height: 100,
+    flex:1,
+
   }
 });

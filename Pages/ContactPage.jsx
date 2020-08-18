@@ -1,7 +1,11 @@
 import React from 'react'
-import { Linking, View, Text, StyleSheet, Image, TouchableHighlight } from 'react-native'
-
+import { View, Text, StyleSheet, Image, TouchableHighlight, Linking, ImageBackground, ScrollView, TouchableOpacity } from 'react-native'
+import background from '../assets/backgroundImg.jpg';
+import img from '../assets/contact.png';
+import { AntDesign } from '@expo/vector-icons';
+import { DrawerActions } from "@react-navigation/native";
 export default class ContactPage extends React.Component {
+
 
 
   AlertNumber = async () => {
@@ -13,7 +17,7 @@ export default class ContactPage extends React.Component {
   }
 
   AlertNumber2 = async () => {
-    Linking.openURL(`tel:`)
+    Linking.openURL(`tel:052-2222222`)
   }
 
   BackToMenu = async () => {
@@ -22,40 +26,42 @@ export default class ContactPage extends React.Component {
 
 
   render() {
+    const { navigation } = this.props
     return (
-      <View style={styles.container}>
-        <View style={{ borderWidth: 5, borderRadius: 5, flex: 0. }}>
-          <Image source={{ uri: "https://w7.pngwing.com/pngs/102/197/png-transparent-black-book-icon-computer-icons-google-contacts-iphone-simple-contact-miscellaneous-child-text.png" }} style={{ width: 100, height: 100 }} />
-        </View>
-        <View style={{ alignItems: 'center', padding: 35 }}>
-          <Text style={{ fontSize: 30 }}>ברוכים הבאים </Text>
-          <Text style={{ fontSize: 30 }}>לדף יצירת הקשר</Text>
-        </View>
-        <View style={{ borderWidth: 5, borderRadius: 5, margin: 0, justifyContent: 'space-between', width: 400, height: 100, paddingTop: 30, flexDirection: "row-reverse" }}>
-          <Text style={{ paddingRight: 20 }}> Dottan</Text>
-          <TouchableHighlight onPress={this.AlertNumber}>
-            <Text style={{ paddingLeft: 20 }}>Press Here</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={{ borderWidth: 5, borderRadius: 5, margin: 0, justifyContent: 'space-between', width: 400, height: 100, paddingTop: 30, flexDirection: "row-reverse" }}>
-          <Text style={{ paddingRight: 20 }}> Dottan</Text>
-          <TouchableHighlight onPress={this.AlertNumber}>
-            <Text style={{ paddingLeft: 20 }}>Press Here</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={{ borderWidth: 5, borderRadius: 5, margin: 0, justifyContent: 'space-between', width: 400, height: 100, paddingTop: 30, flexDirection: "row-reverse" }}>
-          <Text style={{ paddingRight: 20 }}> Dottan</Text>
-          <TouchableHighlight onPress={this.AlertNumber}>
-            <Text style={{ paddingLeft: 20 }}>Press Here</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={{ borderWidth: 5, borderRadius: 5, margin: 0, justifyContent: 'space-between', width: 400, height: 100, paddingTop: 30, flexDirection: "row-reverse" }}>
-          <Text style={{ paddingRight: 20 }}> BackToMenu</Text>
-          <TouchableHighlight onPress={this.BackToMenu}>
-            <Text style={{ paddingLeft: 20 }}>Press Here</Text>
-          </TouchableHighlight>
-        </View>
-      </View>
+      <ImageBackground source={background} style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContentContainer} >
+          <TouchableOpacity style={{ position: 'absolute', top: 50, left: 10 }} onPress={() => { navigation.dispatch(DrawerActions.toggleDrawer()) }}>
+            <AntDesign name="menu-fold" size={24} color="black" style={[{ backgroundColor: 'white' }]} />
+          </TouchableOpacity>
+          <View style={{ borderWidth: 5, borderRadius: 150, borderBottomEndRadius: 30, borderBottomStartRadius: 30, borderColor: "#FFFFFF" }}>
+            <Image source={img} style={{ margin: 20, marginTop: 50, width: 150, height: 150 }} />
+          </View>
+          <View style={{ alignItems: 'center', padding: 35 }}>
+            <Text style={{ fontSize: 30, color: "#FFFFFF", fontWeight: "bold" }}>ברוכים הבאים </Text>
+            <Text style={{ fontSize: 30, color: "#FFFFFF", fontWeight: "bold" }}>לדף יצירת קשר</Text>
+          </View>
+          <View >
+            <View style={{ borderColor: "#FFFFFF", borderWidth: 5, borderRadius: 20, margin: 0, justifyContent: 'space-between', width: 400, height: 100, paddingTop: 30, flexDirection: "row-reverse", backgroundColor: "#8A2BE2" }}>
+              <Text style={{ fontWeight: "bold", paddingRight: 20, color: "#FFFFFF" }}> Director of the Branch </Text>
+              <TouchableHighlight onPress={this.AlertNumber}>
+                <Text style={{ fontWeight: "bold", paddingLeft: 20, color: "#FFFFFF" }}>Press Here</Text>
+              </TouchableHighlight>
+            </View>
+            <View style={{ borderColor: "#FFFFFF", borderWidth: 5, borderRadius: 20, margin: 0, justifyContent: 'space-between', width: 400, height: 100, paddingTop: 30, flexDirection: "row-reverse", backgroundColor: "#8A2BE2" }}>
+              <Text style={{ fontWeight: "bold", paddingRight: 20, color: "#FFFFFF" }}> Deputy Director of the branch</Text>
+              <TouchableHighlight onPress={this.AlertNumber1}>
+                <Text style={{ fontWeight: "bold", paddingLeft: 20, color: "#FFFFFF" }}>Press Here</Text>
+              </TouchableHighlight>
+            </View>
+            <View style={{ borderColor: "#FFFFFF", borderWidth: 5, borderRadius: 20, margin: 0, justifyContent: 'space-between', width: 400, height: 100, paddingTop: 30, flexDirection: "row-reverse", backgroundColor: "#8A2BE2" }}>
+              <Text style={{ fontWeight: "bold", paddingRight: 20, color: "#FFFFFF" }}> Branch</Text>
+              <TouchableHighlight onPress={this.AlertNumber2}>
+                <Text style={{ fontWeight: "bold", paddingLeft: 20, color: "#FFFFFF" }}>Press Here</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </ScrollView >
+      </ImageBackground>
     );
   }
 }
@@ -64,7 +70,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 50,
-    backgroundColor: '#DCDCDC',
-  }
+
+  },
+  scrollContentContainer: {
+    alignItems: "center",
+    paddingBottom: 60,
+    paddingTop: 100,
+    // marginTop:40
+  },
+
 })
